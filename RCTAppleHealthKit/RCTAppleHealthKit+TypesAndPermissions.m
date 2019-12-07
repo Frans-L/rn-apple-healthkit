@@ -11,7 +11,6 @@
 
 @implementation RCTAppleHealthKit (TypesAndPermissions)
 
-
 #pragma mark - HealthKit Permissions
 
 - (NSDictionary *)readPermsDict {
@@ -140,17 +139,17 @@
 
 // Returns HealthKit read permissions from options array
 - (NSSet *)getReadPermsFromOptions:(NSArray *)options {
-    NSDictionary *readPermDict = [self readPermsDict];
-    NSMutableSet *readPermSet = [NSMutableSet setWithCapacity:1];
+  NSDictionary *readPermDict = [self readPermsDict];
+  NSMutableSet *readPermSet = [NSMutableSet setWithCapacity:1];
 
-    for(int i=0; i<[options count]; i++) {
-        NSString *optionKey = options[i];
-        HKObjectType *val = [readPermDict objectForKey:optionKey];
-        if(val != nil) {
-            [readPermSet addObject:val];
-        }
-    }
-    return readPermSet;
+  for(int i=0; i<[options count]; i++) {
+      NSString *optionKey = options[i];
+      HKObjectType *val = [readPermDict objectForKey:optionKey];
+      if(val != nil) {
+          [readPermSet addObject:val];
+      }
+  }
+  return readPermSet;
 }
 
 
@@ -167,6 +166,21 @@
         }
     }
     return writePermSet;
+}
+
+- (HKObjectType *)getWritePermFromString:(NSString *)writePerm {
+    return [writePermDict objectForKey:writePerm];
+}
+
+- (NSString *)getAuthorizationStatusString:(HKAuthorizationStatus)status {
+    switch (status) {
+        case HKAuthorizationStatusNotDetermined:
+            return @"NotDetermined";
+        case HKAuthorizationStatusSharingDenied:
+            return @"SharingDenied";
+        case HKAuthorizationStatusSharingAuthorized:
+            return @"SharingAuthorized";
+    }
 }
 
 @end

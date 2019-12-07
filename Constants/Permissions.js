@@ -59,6 +59,7 @@ export const Permissions = {
   DietaryFatTotal: "DietaryFatTotal",
   DietaryProtein: "DietaryProtein",
   DistanceCycling: "DistanceCycling",
+  DistanceSwimming: "DistanceSwimming",
   DistanceWalkingRunning: "DistanceWalkingRunning",
   FlightsClimbed: "FlightsClimbed",
   HeartRate: "HeartRate",
