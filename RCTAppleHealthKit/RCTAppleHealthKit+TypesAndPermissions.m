@@ -169,6 +169,7 @@
 }
 
 - (HKObjectType *)getWritePermFromString:(NSString *)writePerm {
+    NSDictionary *writePermDict = [self writePermsDict];
     return [writePermDict objectForKey:writePerm];
 }
 
