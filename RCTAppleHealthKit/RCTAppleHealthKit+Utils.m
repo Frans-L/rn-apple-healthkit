@@ -354,8 +354,6 @@
             return @"MartialArts";
         case HKWorkoutActivityTypeMindAndBody:
             return @"MindAndBody";
-        case HKWorkoutActivityTypeMixedMetabolicCardioTraining:
-            return @"MixedMetabolicCardioTraining";
         case HKWorkoutActivityTypePaddleSports:
             return @"PaddleSports";
         case HKWorkoutActivityTypePlay:

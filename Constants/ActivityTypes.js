@@ -6,7 +6,6 @@
 export const ActivityTypes = {
   Boxing: "Boxing",
   Climbing: "Climbing",
-  CrossTraining: "CrossTraining",
   Cycling: "Cycling",
   Dance: "Dance",
   DanceInspiredTraining: "DanceInspiredTraining",
@@ -14,7 +13,7 @@ export const ActivityTypes = {
   Golf: "Golf",
   Hiking: "Hiking",
   MartialArts: "MartialArts",
-  MixedMetabolicCardioTraining: "MixedMetabolicCardioTraining",
+  HighIntensityIntervalTraining: "HighIntensityIntervalTraining",
   PaddleSports: "PaddleSports",
   Play: "Play",
   Running: "Running",
@@ -27,4 +26,13 @@ export const ActivityTypes = {
   Walking: "Walking",
   WaterSports: "WaterSports",
   Yoga: "Yoga",
+  FunctionalStrengthTraining: "FunctionalStrengthTraining",// The constant for strength training, primarily with free weights and body weight.
+  TraditionalStrengthTraining: "TraditionalStrengthTraining", // The constant for strength training exercises primarily using machines or free weights.
+  CrossTraining: "CrossTraining", // The constant for exercise that includes any mixture of cardio, strength, and/or flexibility training.
+  MixedCardio: "MixedCardio", // The constant for workouts that mix a variety of cardio exercise machines or modalities.
+  JumpRope: "JumpRope", // The constant for jumping rope.
+  StairClimbing: "StairClimbing", // The constant for workouts using a stair climbing machine.
+  Stairs: "Stairs", //The constant for running, walking, or other drills using stairs (for example, in a stadium or inside a multilevel building)
+  StepTraining: "StepTraining", // The constant for training using a step bench.
+  FitnessGaming: "FitnessGaming", // The constant for playing fitness-based video games.
 }

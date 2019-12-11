@@ -11,9 +11,9 @@
 #import "RCTAppleHealthKit+Utils.h"
 
 @implementation RCTAppleHealthKit (Methods_Activity)
-    
+
 #pragma mark - helpers
-    
+
 - (HKWorkoutActivityType)activityTypeFromString:(NSString *)type
 {
     if ([type isEqualToString:@"Cycling"]) {
@@ -22,8 +22,6 @@
         return HKWorkoutActivityTypeRunning;
     } else if ([type isEqualToString: @"Walking"]) {
         return HKWorkoutActivityTypeWalking;
-    } else if ([type isEqualToString:@"MixedMetabolicCardioTraining"]) {
-        return HKWorkoutActivityTypeMixedMetabolicCardioTraining;
     } else if ([type isEqualToString:@"Dance"]) {
         return HKWorkoutActivityTypeDance;
     } else if ([type isEqualToString:@"Yoga"]) {
@@ -62,36 +60,44 @@
         return HKWorkoutActivityTypePaddleSports;
     } else if ([type isEqualToString:@"Elliptical"]) {
         return HKWorkoutActivityTypeElliptical;
+    } else if ([type isEqualToString:@"FunctionalStrengthTraining"]) {
+        return HKWorkoutActivityTypeFunctionalStrengthTraining;
+    } else if ([type isEqualToString:@"TraditionalStrengthTraining"]) {
+        return HKWorkoutActivityTypeTraditionalStrengthTraining;
+    } else if ([type isEqualToString:@"MixedCardio"]) {
+        return HKWorkoutActivityTypeMixedCardio;
+    } else if ([type isEqualToString:@"PreparationAndRecovery"]) {
+        return HKWorkoutActivityTypePreparationAndRecovery;
     }
-    
+
     return  HKWorkoutActivityTypeOther;
 }
-    
+
 - (HKQuantityType *)distanceTypeForType:(HKWorkoutActivityType)type
 {
     if (type == HKWorkoutActivityTypeCycling) {
         return [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceCycling];
     }
-    
+
     return [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceWalkingRunning];
 }
-    
-    
+
+
 #pragma mark - RN methods
-    
+
 - (void)activity_getActiveEnergyBurned:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     HKQuantityType *activeEnergyType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
     HKUnit *cal = [HKUnit kilocalorieUnit];
-    
+
     if(startDate == nil){
         callback(@[RCTMakeError(@"startDate is required in options", nil, nil)]);
         return;
     }
     NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
-    
+
     [self fetchQuantitySamplesOfType:activeEnergyType
                                 unit:cal
                            predicate:predicate
@@ -107,7 +113,7 @@
                               }
                           }];
 }
-    
+
 - (void)activity_saveWorkout:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     NSString *reportId = [RCTAppleHealthKit stringFromOptions:input key:@"id" withDefault:@""];
@@ -116,12 +122,12 @@
     NSDate *startDate = [RCTAppleHealthKit startDateFromOptions:input];
     NSDate *endDate = [RCTAppleHealthKit endDateFromOptions:input];
     NSNumber *distance = input[@"distance"];
-    NSString *type = [RCTAppleHealthKit stringFromOptions:input key:@"type" withDefault:@"MixedMetabolicCardioTraining"];
-    
+    NSString *type = [RCTAppleHealthKit stringFromOptions:input key:@"type" withDefault:@"CrossTraining"];
+
     HKWorkoutActivityType activityType = [self activityTypeFromString:type];
     NSMutableArray *workoutSamples = [NSMutableArray new];
     HKQuantity *workoutDistance = nil;
-    
+
     // create energy burn sample
     HKQuantity *kcalQuantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:@"kcal"] doubleValue:calories];
     HKQuantityType *kcalType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
@@ -131,9 +137,9 @@
                                                                     endDate:endDate
                                                                    metadata:@{@"reportId": reportId}
                                     ];
-    
+
     [workoutSamples addObject:kcalSample];
-    
+
     // create distance covered sample
     if (distance != nil) {
         HKQuantity *distanceQuantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:@"m"] doubleValue:[distance doubleValue]];
@@ -143,10 +149,10 @@
                                                                             endDate:endDate
                                                                            metadata:@{@"reportId": reportId}
                                             ];
-        
+
         [workoutSamples addObject:distanceSample];
     }
-    
+
     // create the workout
     HKWorkout *workout = [HKWorkout workoutWithActivityType:activityType
                                                   startDate:startDate
@@ -156,7 +162,7 @@
                                               totalDistance:workoutDistance
                                                    metadata:@{@"name": name, @"reportId": reportId}
                           ];
-    
+
     // save workout and add any samples necessary
     [self.healthStore saveObject:workout withCompletion:^(BOOL success, NSError *error) {
         if (!success) {
@@ -164,14 +170,14 @@
             callback(@[RCTMakeError(@"error saving workout", error, nil)]);
             return;
         }
-        
+
         [self.healthStore addSamples:workoutSamples toWorkout:workout completion:^(BOOL success, NSError *error) {
             if (!success) {
                 NSLog(@"error saving workout: %@", error);
                 callback(@[RCTMakeError(@"error saving workout", error, nil)]);
                 return;
             }
-            
+
             callback(@[[NSNull null]]);
         }];
     }];
